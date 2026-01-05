@@ -1,9 +1,12 @@
 """Date and timestamp formatting with source-system-aware patterns."""
 
 from datetime import date, datetime
-from typing import Dict, List
+from typing import Dict, List, Optional, TYPE_CHECKING
 
 from ..rng import RNGManager
+
+if TYPE_CHECKING:
+    from ..stats import StatisticsTracker
 
 
 # Date formats by source system
@@ -139,14 +142,16 @@ INVALID_DATE_STRINGS: List[str] = [
 class DateFormatter:
     """Format dates based on source system conventions."""
 
-    def __init__(self, rng: RNGManager):
+    def __init__(self, rng: RNGManager, stats: Optional["StatisticsTracker"] = None):
         """
         Initialize date formatter.
 
         Args:
             rng: Random number generator
+            stats: Optional statistics tracker for recording format distributions
         """
         self.rng = rng
+        self.stats = stats
 
     def format_date(self, d: date, source_system: str) -> str:
         """
@@ -164,6 +169,10 @@ class DateFormatter:
         # Sample format based on distribution
         format_name = self.rng.choice(formats)
         pattern = FORMAT_PATTERNS.get(format_name, "%Y-%m-%d")
+
+        # Record format usage to stats
+        if self.stats:
+            self.stats.record_date_format(source_system, format_name)
 
         return d.strftime(pattern)
 

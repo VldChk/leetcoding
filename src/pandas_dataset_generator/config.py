@@ -19,6 +19,7 @@ class Config:
     # Target size
     target_total_size_mb: float = 100.0
     include_truth_in_target: bool = False
+    skip_truth_file: bool = False  # If True, don't write truth_party2_mapping.csv
 
     # Row counts for dimension tables
     n_investors: int = 25_000

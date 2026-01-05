@@ -17,7 +17,9 @@ class AnomalyRates:
 
     # === Investor table anomalies ===
     p_missing_investor_type: float = 0.01
-    p_missing_country: float = 0.008
+    p_missing_country_investor: float = 0.008  # Investors use 0.008
+    p_missing_country_private: float = 0.01    # Private companies use 0.01
+    p_missing_country_public: float = 0.008    # Public companies use 0.008
     p_future_founded_year: float = 0.002
     p_very_old_founded_year: float = 0.001
     p_aum_commas: float = 0.05

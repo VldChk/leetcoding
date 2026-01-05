@@ -28,22 +28,22 @@ PARTY1_TYPE_BY_DEAL = {
     "JOINT_VENTURE": {"PUBLIC": 0.50, "PRIVATE": 0.50},
 }
 
-# Party2 type by deal type
+# Party2 type by deal type (INVESTOR can be a target in acquisitions/JVs)
 PARTY2_TYPE_BY_DEAL = {
     "INVESTMENT": {"PRIVATE": 0.92, "PUBLIC": 0.06, "UNKNOWN": 0.02},
-    "ACQUISITION": {"PRIVATE": 0.75, "PUBLIC": 0.20, "UNKNOWN": 0.05},
-    "MERGER": {"PRIVATE": 0.50, "PUBLIC": 0.45, "UNKNOWN": 0.05},
+    "ACQUISITION": {"PRIVATE": 0.70, "PUBLIC": 0.18, "INVESTOR": 0.07, "UNKNOWN": 0.05},
+    "MERGER": {"PRIVATE": 0.48, "PUBLIC": 0.45, "INVESTOR": 0.02, "UNKNOWN": 0.05},
     "MINORITY_STAKE": {"PRIVATE": 0.70, "PUBLIC": 0.25, "UNKNOWN": 0.05},
-    "JOINT_VENTURE": {"PRIVATE": 0.60, "PUBLIC": 0.35, "UNKNOWN": 0.05},
+    "JOINT_VENTURE": {"PRIVATE": 0.55, "PUBLIC": 0.35, "INVESTOR": 0.05, "UNKNOWN": 0.05},
 }
 
-# Party2 name match class distribution
+# Party2 name match class distribution (spec: EXACT|ALIAS|NORMALIZED|TYPO|UNKNOWN)
 MATCH_CLASS_DIST = {
-    "EXACT_CANONICAL": 0.55,
-    "ALIAS_FROM_TABLE": 0.25,
-    "NORMALIZED_VARIANT": 0.10,
-    "TYPO_1_EDIT": 0.05,
-    "UNKNOWN_EXTERNAL": 0.05,
+    "EXACT": 0.55,
+    "ALIAS": 0.25,
+    "NORMALIZED": 0.10,
+    "TYPO": 0.05,
+    "UNKNOWN": 0.05,
 }
 
 
@@ -117,7 +117,7 @@ class DealGenerator:
 
         self.distributions = NumericDistributions(rng)
         self.entity_sampler = EntitySampler(rng)
-        self.json_generator = JsonFieldGenerator(rng)
+        self.json_generator = JsonFieldGenerator(rng, dirtiness=dirtiness)
         self.alias_transformer = AliasTransformer(rng)
 
         self._current_id = 0
@@ -309,7 +309,7 @@ class DealGenerator:
         match_class = self.rng.choice(MATCH_CLASS_DIST)
 
         # Handle UNKNOWN type
-        if party2_type == "UNKNOWN" or match_class == "UNKNOWN_EXTERNAL":
+        if party2_type == "UNKNOWN" or match_class == "UNKNOWN":
             name = self.name_generator.generate_unknown_company_name()
             hint = self._generate_party2_hint("UNKNOWN")
             return name, hint, TruthMapping(
@@ -359,20 +359,20 @@ class DealGenerator:
         match_class: str,
     ) -> Tuple[str, float]:
         """Generate party2 name based on match class."""
-        if match_class == "EXACT_CANONICAL":
+        if match_class == "EXACT":
             return canonical_name, 1.0
 
-        elif match_class == "ALIAS_FROM_TABLE":
+        elif match_class == "ALIAS":
             alias = self.alias_generator.get_random_alias(entity_id)
             if alias:
                 return alias, 0.95
             return canonical_name, 1.0
 
-        elif match_class == "NORMALIZED_VARIANT":
+        elif match_class == "NORMALIZED":
             name, _ = self.alias_transformer.normalize_name(canonical_name)
             return name, 0.85
 
-        elif match_class == "TYPO_1_EDIT":
+        elif match_class == "TYPO":
             name, _ = self.alias_transformer.introduce_typo(canonical_name)
             return name, 0.70
 
@@ -430,7 +430,10 @@ class DealGenerator:
         elif deal_status == "WITHDRAWN":
             closed = None
         else:  # COMPLETED
-            if announced and self.dirtiness.should_inject("closed_before_announced"):
+            # Check for invalid date injection on closed_date
+            if self.dirtiness.should_inject("invalid_date_string"):
+                closed = self.date_formatter.generate_invalid_date()
+            elif announced and self.dirtiness.should_inject("closed_before_announced"):
                 # Inject closed before announced
                 early_date = date(2015, 1, 1)
                 closed = self.date_formatter.format_date(early_date, source_system)

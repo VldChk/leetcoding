@@ -40,15 +40,18 @@ class PrivateCompanyGenerator(BaseEntityGenerator):
         """Generate a single private company entity."""
         company_id = self.generate_id()
 
+        # Source system (determined first for consistent date formatting)
+        source_system = self.sample_from_distribution(self.config.private_source_dist)
+
         # Generate names
         canonical_name, legal_name = self.name_generator.generate_company_name()
 
         # Maybe null legal name
         legal_name = self.maybe_null(legal_name, "missing_legal_name")
 
-        # Country
+        # Country - uses private company-specific rate (0.01)
         country = self.rng.choice(self.config.countries)
-        country = self.maybe_null(country, "missing_country")
+        country = self.maybe_null(country, "missing_country_private")
 
         # Sector
         sector = self.sample_from_distribution(self.config.sector_dist)
@@ -58,8 +61,8 @@ class PrivateCompanyGenerator(BaseEntityGenerator):
         stage = self.sample_from_distribution(self.config.stage_dist)
         stage = self.maybe_null(stage, "missing_stage")
 
-        # Founded date (with anomalies)
-        founded_date = self._generate_founded_date()
+        # Founded date (with anomalies) - uses row's source_system for formatting
+        founded_date = self._generate_founded_date(source_system)
 
         # Employees
         employees = self._generate_employees()
@@ -76,9 +79,6 @@ class PrivateCompanyGenerator(BaseEntityGenerator):
             min_tags=1,
             max_tags=4
         )
-
-        # Source system
-        source_system = self.sample_from_distribution(self.config.private_source_dist)
 
         # Last updated
         last_updated = self._generate_last_updated(source_system)
@@ -99,7 +99,7 @@ class PrivateCompanyGenerator(BaseEntityGenerator):
             "last_updated_ts_raw": last_updated,
         }
 
-    def _generate_founded_date(self) -> Optional[str]:
+    def _generate_founded_date(self, source_system: str) -> Optional[str]:
         """Generate founded date with possible anomalies."""
         # Check for invalid date anomaly
         if self.dirtiness.should_inject("invalid_founded_date"):
@@ -111,9 +111,8 @@ class PrivateCompanyGenerator(BaseEntityGenerator):
             end_year=2023
         )
 
-        # Get source system for formatting (use a default)
-        source = self.sample_from_distribution(self.config.private_source_dist)
-        return self.date_formatter.format_date(date, source)
+        # Use the row's source_system for consistent formatting
+        return self.date_formatter.format_date(date, source_system)
 
     def _generate_employees(self) -> Optional[str]:
         """Generate employee count with anomalies."""

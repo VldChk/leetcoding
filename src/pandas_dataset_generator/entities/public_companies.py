@@ -39,6 +39,9 @@ class PublicCompanyGenerator(BaseEntityGenerator):
         """Generate a single public company entity."""
         company_id = self.generate_id()
 
+        # Source system (determined first for consistent date formatting)
+        source_system = self.sample_from_distribution(self.config.public_source_dist)
+
         # Generate name
         canonical_name, _ = self.name_generator.generate_company_name(
             include_legal_suffix=False
@@ -48,9 +51,9 @@ class PublicCompanyGenerator(BaseEntityGenerator):
         exchange = self.rng.choice(self.config.exchanges)
         exchange = self.maybe_null(exchange, "missing_exchange")
 
-        # Country (related to exchange)
+        # Country (related to exchange) - uses public company-specific rate (0.008)
         country = self._get_country_for_exchange(exchange)
-        country = self.maybe_null(country, "missing_country")
+        country = self.maybe_null(country, "missing_country_public")
 
         # ISIN
         isin = self._generate_isin(country)
@@ -72,14 +75,11 @@ class PublicCompanyGenerator(BaseEntityGenerator):
         # Market cap
         market_cap = self._generate_market_cap()
 
-        # IPO date
-        ipo_date = self._generate_ipo_date()
+        # IPO date - uses row's source_system for formatting
+        ipo_date = self._generate_ipo_date(source_system)
 
         # Status
         status = "ACTIVE" if self.rng.random() < 0.93 else "DELISTED"
-
-        # Source system
-        source_system = self.sample_from_distribution(self.config.public_source_dist)
 
         return {
             "public_company_id": company_id,
@@ -182,7 +182,7 @@ class PublicCompanyGenerator(BaseEntityGenerator):
             currency="USD",
         )
 
-    def _generate_ipo_date(self) -> Optional[str]:
+    def _generate_ipo_date(self, source_system: str) -> Optional[str]:
         """Generate IPO date with possible anomalies."""
         # Invalid date
         if self.dirtiness.should_inject("invalid_ipo_date"):
@@ -194,5 +194,5 @@ class PublicCompanyGenerator(BaseEntityGenerator):
             end_year=2023
         )
 
-        source = self.sample_from_distribution(self.config.public_source_dist)
-        return self.date_formatter.format_date(date, source)
+        # Use the row's source_system for consistent formatting
+        return self.date_formatter.format_date(date, source_system)

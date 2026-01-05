@@ -1,6 +1,7 @@
 """Main dataset generator orchestrator."""
 
 import json
+import re
 from pathlib import Path
 from typing import Optional, Callable
 
@@ -78,7 +79,7 @@ class DatasetGenerator:
 
         # Initialize formatters
         self.name_generator = NameGenerator(self.rng)
-        self.date_formatter = DateFormatter(self.rng)
+        self.date_formatter = DateFormatter(self.rng, stats=self.stats)
         self.numeric_formatter = NumericFormatter(self.rng)
         self.json_generator = JsonFieldGenerator(self.rng)
 
@@ -184,21 +185,26 @@ class DatasetGenerator:
             "name_aliases.csv": measure_csv_size(self.aliases_df),
         }
 
-        # Create deal generator for pilot
-        deal_gen = DealGenerator(
+        # Create deal generator for pilot with separate RNGs
+        # Use offset seeds so pilot doesn't affect full run RNG state
+        pilot_seed_offset = 10000
+        pilot_deal_gen = DealGenerator(
             config=self.config,
-            rng=self.rng,
-            dirtiness=self.dirtiness,
+            rng=RNGManager(seed=self.seed + pilot_seed_offset),
+            dirtiness=DirtinessEngine(
+                self.anomaly_rates,
+                RNGManager(seed=self.seed + pilot_seed_offset + 1)
+            ),
             name_generator=self.name_generator,
-            date_formatter=self.date_formatter,
-            numeric_formatter=self.numeric_formatter,
+            date_formatter=DateFormatter(RNGManager(seed=self.seed + pilot_seed_offset + 2)),
+            numeric_formatter=NumericFormatter(RNGManager(seed=self.seed + pilot_seed_offset + 3)),
             entity_registry=self.entity_registry,
             alias_generator=self._alias_generator,
         )
 
         # Generate pilot deals
         self._progress(f"  - Generating pilot ({self.config.pilot_deals_rows:,} rows)...")
-        pilot_deals, pilot_truth = deal_gen.generate(self.config.pilot_deals_rows)
+        pilot_deals, pilot_truth = pilot_deal_gen.generate(self.config.pilot_deals_rows)
 
         # Calibrate
         calibrator = SizeCalibrator(
@@ -227,7 +233,7 @@ class DatasetGenerator:
             rng=RNGManager(seed=self.seed),  # Fresh RNG for reproducibility
             dirtiness=DirtinessEngine(self.anomaly_rates, RNGManager(seed=self.seed + 1)),
             name_generator=self.name_generator,
-            date_formatter=DateFormatter(RNGManager(seed=self.seed + 2)),
+            date_formatter=DateFormatter(RNGManager(seed=self.seed + 2), stats=self.stats),
             numeric_formatter=NumericFormatter(RNGManager(seed=self.seed + 3)),
             entity_registry=self.entity_registry,
             alias_generator=self._alias_generator,
@@ -244,6 +250,9 @@ class DatasetGenerator:
     def _post_process(self) -> None:
         """Phase 4: Post-processing."""
         self._progress("Phase 4: Post-processing...")
+
+        # Inject founded_after_first_deal anomaly
+        self._inject_founded_after_first_deal()
 
         # Build investors_json from deals
         self._build_investors_json()
@@ -262,6 +271,10 @@ class DatasetGenerator:
             frac=1, random_state=self.seed + 2
         ).reset_index(drop=True)
 
+        self.aliases_df = self.aliases_df.sample(
+            frac=1, random_state=self.seed + 3
+        ).reset_index(drop=True)
+
         self._progress("  - Post-processing complete")
 
     def _build_investors_json(self) -> None:
@@ -278,15 +291,12 @@ class DatasetGenerator:
 
         for _, deal in investment_deals.iterrows():
             party1_id = deal["party1_id"]
-            party1_type = deal["party1_type_hint"]
 
-            # Only include investor party1s
-            if party1_type != "INVESTOR":
-                continue
-
-            # Get investor name
+            # Look up party1 in entity registry to determine actual type
+            # (don't rely on party1_type_hint as it may be wrong due to anomaly injection)
             investor = self.entity_registry.investors.get(party1_id)
             if not investor:
+                # Not an investor, skip
                 continue
 
             investor_name = investor["investor_name_canonical"]
@@ -330,7 +340,8 @@ class DatasetGenerator:
             investors = company_investors.get(company_id, set())
 
             if not investors:
-                return "[]"
+                # Return None (nullable) instead of "[]" for companies with no known investors
+                return None
 
             investor_list = list(investors)
 
@@ -345,6 +356,76 @@ class DatasetGenerator:
         self.private_df["investors_json"] = self.private_df.apply(
             update_investors_json, axis=1
         )
+
+    def _inject_founded_after_first_deal(self) -> None:
+        """Inject founded_after_first_deal anomaly for some private companies."""
+        self._progress("  - Injecting founded_after_first_deal anomalies...")
+
+        # Find the earliest deal date for each private company via truth mapping
+        company_earliest_deal = {}
+
+        for _, deal in self.deals_df.iterrows():
+            deal_id = deal["deal_id"]
+            announced_raw = deal["announced_date_raw"]
+
+            # Skip if no announced date
+            if not announced_raw or announced_raw in ("", "N/A", "TBD", "UNKNOWN"):
+                continue
+
+            # Find party2 from truth mapping
+            truth_row = self.truth_df[self.truth_df["deal_id"] == deal_id]
+            if truth_row.empty:
+                continue
+
+            party2_id = truth_row.iloc[0]["party2_resolved_entity_id"]
+            party2_type = truth_row.iloc[0]["party2_resolved_entity_type"]
+
+            if party2_type != "PRIVATE" or not party2_id:
+                continue
+
+            # Extract year from announced_date_raw (various formats)
+            try:
+                # Try to extract 4-digit year
+                year_match = re.search(r'\b(19|20)\d{2}\b', str(announced_raw))
+                if year_match:
+                    deal_year = int(year_match.group())
+                    if party2_id not in company_earliest_deal:
+                        company_earliest_deal[party2_id] = deal_year
+                    else:
+                        company_earliest_deal[party2_id] = min(
+                            company_earliest_deal[party2_id], deal_year
+                        )
+            except (ValueError, AttributeError):
+                continue
+
+        # Now inject anomaly for some companies
+        rate = self.anomaly_rates.p_founded_after_first_deal
+        injected_count = 0
+
+        for idx, row in self.private_df.iterrows():
+            company_id = row["private_company_id"]
+
+            if company_id not in company_earliest_deal:
+                continue
+
+            if self.rng.random() >= rate:
+                continue
+
+            earliest_deal_year = company_earliest_deal[company_id]
+
+            # Set founded year to 1-3 years AFTER the first deal
+            offset = self.rng.integers(1, 4)
+            new_founded_year = earliest_deal_year + offset
+
+            # Generate a new founded date string in the future
+            new_date = f"{new_founded_year}-01-15"
+
+            self.private_df.at[idx, "founded_date_raw"] = new_date
+            self.dirtiness.record_anomaly("founded_after_first_deal")
+            injected_count += 1
+
+        if injected_count > 0:
+            self._progress(f"    Injected {injected_count} founded_after_first_deal anomalies")
 
     def _write_output(self) -> None:
         """Phase 5: Write output files."""
@@ -384,20 +465,36 @@ class DatasetGenerator:
         )
         self._progress(f"  - deals.csv: {deal_size / 1024 / 1024:.2f} MB")
 
-        # Write truth mapping
-        truth_size = self.csv_writer.write(self.truth_df, "truth_party2_mapping.csv")
-        self.stats.record_file_stats(
-            "truth_party2_mapping.csv", len(self.truth_df), truth_size, len(self.truth_df.columns)
-        )
-        self._progress(f"  - truth_party2_mapping.csv: {truth_size / 1024 / 1024:.2f} MB")
+        # Write truth mapping (unless skipped)
+        truth_size = 0
+        if not self.config.skip_truth_file:
+            truth_size = self.csv_writer.write(self.truth_df, "truth_party2_mapping.csv")
+            self.stats.record_file_stats(
+                "truth_party2_mapping.csv", len(self.truth_df), truth_size, len(self.truth_df.columns)
+            )
+            self._progress(f"  - truth_party2_mapping.csv: {truth_size / 1024 / 1024:.2f} MB")
+        else:
+            self._progress("  - truth_party2_mapping.csv: SKIPPED (skip_truth_file=True)")
 
-        # Update stats with anomaly counts
+        # Update stats with anomaly counts and probabilities
         self.stats.set_anomaly_counts(self.dirtiness.get_anomaly_counts())
+        self.stats.set_anomaly_probabilities(self.anomaly_rates.to_dict())
+
+        # Calculate total size and check against target
+        total_size = inv_size + prv_size + pub_size + alias_size + deal_size + truth_size
+        target_bytes = self.config.target_total_size_mb * 1024 * 1024
+
+        if total_size < target_bytes * 0.95:  # More than 5% below target
+            deviation_pct = (target_bytes - total_size) / target_bytes * 100
+            self.stats.add_deviation(
+                f"Target size not met: actual {total_size / 1024 / 1024:.2f} MB "
+                f"vs target {self.config.target_total_size_mb:.2f} MB "
+                f"({deviation_pct:.1f}% below target)"
+            )
 
         # Write meta.json
         meta_size = self.json_writer.write_meta(self.stats)
         self._progress(f"  - meta.json: {meta_size / 1024:.1f} KB")
 
         # Summary
-        total_size = inv_size + prv_size + pub_size + alias_size + deal_size + truth_size
         self._progress(f"\nTotal size: {total_size / 1024 / 1024:.2f} MB")

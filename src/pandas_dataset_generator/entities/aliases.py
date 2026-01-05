@@ -179,8 +179,9 @@ class AliasGenerator:
         if len(unique_aliases) < 10:
             return
 
-        # Number of collisions to inject
-        n_collisions = int(len(self._all_aliases) * 0.002)  # 0.2%
+        # Number of collisions to inject (using configured rate)
+        collision_rate = self.dirtiness.rates.p_alias_collision
+        n_collisions = int(len(self._all_aliases) * collision_rate)
 
         for _ in range(n_collisions):
             if len(unique_aliases) < 2:

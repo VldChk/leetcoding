@@ -52,9 +52,9 @@ class InvestorGenerator(BaseEntityGenerator):
         investor_type = self.sample_from_distribution(self.config.investor_type_dist)
         investor_type = self.maybe_null(investor_type, "missing_investor_type")
 
-        # Country (with possible missing)
+        # Country (with possible missing) - uses investor-specific rate
         country = self.rng.choice(self.config.countries)
-        country = self.maybe_null(country, "missing_country")
+        country = self.maybe_null(country, "missing_country_investor")
 
         # Founded year (with anomalies)
         founded_year = self._generate_founded_year()

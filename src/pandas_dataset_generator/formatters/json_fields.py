@@ -1,9 +1,12 @@
 """JSON field generation for semi-structured data columns."""
 
 import json
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, TYPE_CHECKING
 
 from ..rng import RNGManager
+
+if TYPE_CHECKING:
+    from ..dirtiness.engine import DirtinessEngine
 
 
 # Deal terms keys and values
@@ -37,14 +40,20 @@ CORRUPT_JSON_EXAMPLES: List[str] = [
 class JsonFieldGenerator:
     """Generate JSON fields for semi-structured data."""
 
-    def __init__(self, rng: RNGManager):
+    def __init__(
+        self,
+        rng: RNGManager,
+        dirtiness: Optional["DirtinessEngine"] = None,
+    ):
         """
         Initialize JSON field generator.
 
         Args:
             rng: Random number generator
+            dirtiness: Optional dirtiness engine for tracking anomalies
         """
         self.rng = rng
+        self.dirtiness = dirtiness
 
     def generate_investors_json(
         self,
@@ -121,10 +130,14 @@ class JsonFieldGenerator:
         """
         # Missing
         if self.rng.random() < p_missing:
+            if self.dirtiness:
+                self.dirtiness.record_anomaly("missing_terms")
             return None
 
         # Corrupt
         if self.rng.random() < p_corrupt:
+            if self.dirtiness:
+                self.dirtiness.record_anomaly("corrupt_terms_json")
             return self.rng.choice(CORRUPT_JSON_EXAMPLES)
 
         # Generate valid terms

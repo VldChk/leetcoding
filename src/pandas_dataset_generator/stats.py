@@ -22,9 +22,11 @@ class StatisticsTracker:
     Collects information about:
     - Row counts per file
     - File sizes
-    - Anomaly counts
+    - Anomaly counts and probabilities
     - Distribution samples
+    - Date format distributions
     - Generation parameters
+    - Deviations from defaults
     """
 
     CONTRACT_VERSION = "1.0"
@@ -48,14 +50,23 @@ class StatisticsTracker:
         # Anomaly counts (populated by DirtinessEngine)
         self._anomaly_counts: Dict[str, int] = defaultdict(int)
 
+        # Anomaly probabilities used (from AnomalyRates)
+        self._anomaly_probabilities: Dict[str, float] = {}
+
         # Distribution samples (for validation)
         self._distributions: Dict[str, Dict[str, int]] = defaultdict(lambda: defaultdict(int))
+
+        # Date format distributions actually used
+        self._date_format_distributions: Dict[str, Dict[str, int]] = defaultdict(lambda: defaultdict(int))
 
         # Calibration info
         self._calibration: Dict[str, Any] = {}
 
         # Custom notes
         self._notes: list = []
+
+        # Deviations from defaults
+        self._deviations: list = []
 
     def record_file_stats(self, filename: str, row_count: int,
                           size_bytes: int, column_count: int) -> None:
@@ -91,6 +102,18 @@ class StatisticsTracker:
     def add_note(self, note: str) -> None:
         """Add a custom note to the metadata."""
         self._notes.append(note)
+
+    def add_deviation(self, deviation: str) -> None:
+        """Add a deviation note to the metadata."""
+        self._deviations.append(deviation)
+
+    def set_anomaly_probabilities(self, rates_dict: Dict[str, float]) -> None:
+        """Set all anomaly probabilities used (from AnomalyRates)."""
+        self._anomaly_probabilities = rates_dict
+
+    def record_date_format(self, source_system: str, format_used: str) -> None:
+        """Record a date format usage for a source system."""
+        self._date_format_distributions[source_system][format_used] += 1
 
     def finalize(self) -> None:
         """Mark generation as complete."""
@@ -132,11 +155,17 @@ class StatisticsTracker:
             },
             "files": file_stats_dict,
             "calibration": self._calibration,
+            "anomaly_probabilities": self._anomaly_probabilities if self._anomaly_probabilities else None,
             "anomaly_counts": dict(self._anomaly_counts),
+            "date_format_distributions": {
+                source: dict(formats)
+                for source, formats in self._date_format_distributions.items()
+            } if self._date_format_distributions else None,
             "distributions": {
                 name: dict(counts)
                 for name, counts in self._distributions.items()
-            },
+            } if self._distributions else None,
+            "deviations": self._deviations if self._deviations else None,
             "notes": self._notes if self._notes else None,
         }
 

@@ -124,15 +124,25 @@ class DealGenerator:
         self._deals: List[Dict[str, Any]] = []
         self._truth_mappings: List[TruthMapping] = []
 
-        # Precompute Zipf weights for entity sampling
+        # Precompute ids and Zipf weights for entity sampling
+        self._investor_ids = [
+            entity["investor_id"] for entity in entity_registry.investor_list
+        ]
+        self._private_ids = [
+            entity["private_company_id"] for entity in entity_registry.private_list
+        ]
+        self._public_ids = [
+            entity["public_company_id"] for entity in entity_registry.public_list
+        ]
+
         self._investor_weights = self.entity_sampler.compute_zipf_weights(
-            len(entity_registry.investor_list), alpha=1.5
+            len(self._investor_ids), alpha=1.5
         )
         self._private_weights = self.entity_sampler.compute_zipf_weights(
-            len(entity_registry.private_list), alpha=1.3
+            len(self._private_ids), alpha=1.3
         )
         self._public_weights = self.entity_sampler.compute_zipf_weights(
-            len(entity_registry.public_list), alpha=1.4
+            len(self._public_ids), alpha=1.4
         )
 
     def generate_id(self) -> str:
@@ -252,26 +262,30 @@ class DealGenerator:
             return self._generate_bad_party1_id(party_type), party_type
 
         # Select entity with Zipf weighting
-        if party_type == "INVESTOR" and self.entity_registry.investor_list:
-            entity = self.entity_sampler.sample_one_with_zipf(
-                self.entity_registry.investor_list, alpha=1.5
-            )
-            return entity["investor_id"], party_type
+        if party_type == "INVESTOR" and self._investor_ids:
+            entity_id = self._sample_zipf_id(self._investor_ids, self._investor_weights)
+            if entity_id:
+                return entity_id, party_type
 
-        elif party_type == "PRIVATE" and self.entity_registry.private_list:
-            entity = self.entity_sampler.sample_one_with_zipf(
-                self.entity_registry.private_list, alpha=1.3
-            )
-            return entity["private_company_id"], party_type
+        elif party_type == "PRIVATE" and self._private_ids:
+            entity_id = self._sample_zipf_id(self._private_ids, self._private_weights)
+            if entity_id:
+                return entity_id, party_type
 
-        elif party_type == "PUBLIC" and self.entity_registry.public_list:
-            entity = self.entity_sampler.sample_one_with_zipf(
-                self.entity_registry.public_list, alpha=1.4
-            )
-            return entity["public_company_id"], party_type
+        elif party_type == "PUBLIC" and self._public_ids:
+            entity_id = self._sample_zipf_id(self._public_ids, self._public_weights)
+            if entity_id:
+                return entity_id, party_type
 
         # Fallback
         return "INV0000001", "INVESTOR"
+
+    def _sample_zipf_id(self, ids: List[str], weights) -> Optional[str]:
+        """Sample an entity id using precomputed Zipf weights."""
+        if not ids:
+            return None
+        idx = self.rng.choice(len(ids), p=weights)
+        return ids[int(idx)]
 
     def _generate_bad_party1_id(self, party_type: str) -> str:
         """Generate an invalid party1 ID."""

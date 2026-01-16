@@ -1,7 +1,6 @@
 """Main dataset generator orchestrator."""
 
 import json
-import re
 from pathlib import Path
 from typing import Optional, Callable
 
@@ -281,48 +280,48 @@ class DatasetGenerator:
         """Build investors_json field from deals data."""
         self._progress("  - Building investors_json from deals...")
 
-        # Find investment deals
-        investment_deals = self.deals_df[
-            self.deals_df["deal_type"].isin(["INVESTMENT", "MINORITY_STAKE"])
-        ]
+        truth_index = self.truth_df.set_index("deal_id")
+        party2_ids = self.deals_df["deal_id"].map(
+            truth_index["party2_resolved_entity_id"]
+        )
+        party2_types = self.deals_df["deal_id"].map(
+            truth_index["party2_resolved_entity_type"]
+        )
+
+        investor_name_by_id = {
+            investor_id: investor["investor_name_canonical"]
+            for investor_id, investor in self.entity_registry.investors.items()
+        }
+        investor_names = self.deals_df["party1_id"].map(investor_name_by_id)
 
         # Group by party2 and collect investors
         company_investors = {}
 
-        for _, deal in investment_deals.iterrows():
-            party1_id = deal["party1_id"]
+        investment_mask = self.deals_df["deal_type"].isin(
+            ["INVESTMENT", "MINORITY_STAKE"]
+        )
+        party2_mask = (
+            (party2_types == "PRIVATE")
+            & party2_ids.notna()
+            & (party2_ids != "")
+        )
+        party1_mask = investor_names.notna()
 
-            # Look up party1 in entity registry to determine actual type
-            # (don't rely on party1_type_hint as it may be wrong due to anomaly injection)
-            investor = self.entity_registry.investors.get(party1_id)
-            if not investor:
-                # Not an investor, skip
-                continue
+        mask = investment_mask & party2_mask & party1_mask
+        filtered_party2 = party2_ids[mask]
+        filtered_investors = investor_names[mask]
 
-            investor_name = investor["investor_name_canonical"]
-
-            # Find corresponding party2 in truth mapping
-            deal_id = deal["deal_id"]
-            truth_row = self.truth_df[self.truth_df["deal_id"] == deal_id]
-
-            if truth_row.empty:
-                continue
-
-            party2_id = truth_row.iloc[0]["party2_resolved_entity_id"]
-            party2_type = truth_row.iloc[0]["party2_resolved_entity_type"]
-
-            if party2_type != "PRIVATE" or not party2_id:
-                continue
-
-            # Add investor to company
-            if party2_id not in company_investors:
-                company_investors[party2_id] = set()
-
+        for party2_id, investor_name in zip(
+            filtered_party2.to_numpy(),
+            filtered_investors.to_numpy(),
+        ):
             # Inject staleness (skip adding)
             if self.rng.random() < self.anomaly_rates.p_investor_list_stale_drop:
                 self.dirtiness.record_anomaly("investor_list_stale_drop")
                 continue
 
+            if party2_id not in company_investors:
+                company_investors[party2_id] = set()
             company_investors[party2_id].add(investor_name)
 
         # Inject phantom investors
@@ -361,42 +360,38 @@ class DatasetGenerator:
         """Inject founded_after_first_deal anomaly for some private companies."""
         self._progress("  - Injecting founded_after_first_deal anomalies...")
 
-        # Find the earliest deal date for each private company via truth mapping
-        company_earliest_deal = {}
+        truth_index = self.truth_df.set_index("deal_id")
+        party2_ids = self.deals_df["deal_id"].map(
+            truth_index["party2_resolved_entity_id"]
+        )
+        party2_types = self.deals_df["deal_id"].map(
+            truth_index["party2_resolved_entity_type"]
+        )
+        announced = self.deals_df["announced_date_raw"]
 
-        for _, deal in self.deals_df.iterrows():
-            deal_id = deal["deal_id"]
-            announced_raw = deal["announced_date_raw"]
+        valid_mask = announced.notna() & ~announced.isin(
+            ["", "N/A", "TBD", "UNKNOWN"]
+        )
+        valid_mask &= (party2_types == "PRIVATE") & party2_ids.notna() & (party2_ids != "")
 
-            # Skip if no announced date
-            if not announced_raw or announced_raw in ("", "N/A", "TBD", "UNKNOWN"):
-                continue
-
-            # Find party2 from truth mapping
-            truth_row = self.truth_df[self.truth_df["deal_id"] == deal_id]
-            if truth_row.empty:
-                continue
-
-            party2_id = truth_row.iloc[0]["party2_resolved_entity_id"]
-            party2_type = truth_row.iloc[0]["party2_resolved_entity_type"]
-
-            if party2_type != "PRIVATE" or not party2_id:
-                continue
-
-            # Extract year from announced_date_raw (various formats)
-            try:
-                # Try to extract 4-digit year
-                year_match = re.search(r'\b(19|20)\d{2}\b', str(announced_raw))
-                if year_match:
-                    deal_year = int(year_match.group())
-                    if party2_id not in company_earliest_deal:
-                        company_earliest_deal[party2_id] = deal_year
-                    else:
-                        company_earliest_deal[party2_id] = min(
-                            company_earliest_deal[party2_id], deal_year
-                        )
-            except (ValueError, AttributeError):
-                continue
+        if valid_mask.any():
+            years = announced[valid_mask].astype(str).str.extract(
+                r"\b((?:19|20)\d{2})\b",
+                expand=False,
+            )
+            years = pd.to_numeric(years, errors="coerce")
+            company_earliest_deal = (
+                pd.DataFrame(
+                    {"party2_id": party2_ids[valid_mask], "year": years}
+                )
+                .dropna(subset=["party2_id", "year"])
+                .groupby("party2_id", sort=False)["year"]
+                .min()
+                .astype(int)
+                .to_dict()
+            )
+        else:
+            company_earliest_deal = {}
 
         # Now inject anomaly for some companies
         rate = self.anomaly_rates.p_founded_after_first_deal

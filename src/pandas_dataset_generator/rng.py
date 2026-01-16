@@ -1,6 +1,6 @@
 """Reproducible random number generation management."""
 
-from typing import Optional, List, Any
+from typing import Optional, List, Any, Dict, Tuple
 import numpy as np
 
 
@@ -27,6 +27,7 @@ class RNGManager:
 
         self._rng = np.random.default_rng(self._seed)
         self._call_count = 0
+        self._choice_cache: Dict[int, Tuple[List[Any], List[float]]] = {}
 
     @property
     def seed(self) -> int:
@@ -70,8 +71,14 @@ class RNGManager:
         self._call_count += 1
         if isinstance(a, dict):
             # Handle dictionary input (keys as choices, values as probabilities)
-            keys = list(a.keys())
-            probs = list(a.values())
+            cache_key = id(a)
+            cached = self._choice_cache.get(cache_key)
+            if cached is None or len(cached[0]) != len(a):
+                keys = list(a.keys())
+                probs = list(a.values())
+                self._choice_cache[cache_key] = (keys, probs)
+            else:
+                keys, probs = cached
             return self._rng.choice(keys, size=size, replace=replace, p=probs)
         return self._rng.choice(a, size=size, replace=replace, p=p)
 

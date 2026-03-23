@@ -10,6 +10,8 @@ class StockPrice:
         
 
     def update(self, timestamp: int, price: int) -> None:
+        if self._ticks.get(timestamp, -1) == price:
+            return
         self._latest_ts = max(self._latest_ts, timestamp)
         self._ticks[timestamp] = price
 

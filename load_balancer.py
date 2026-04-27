@@ -107,8 +107,8 @@ class LoadBalancer:
         self.balancer = RoundRobinBalanceStrategy()
         self.inactive_servers: List[Server] = []
         self._add_server_lock = Lock()
-
-    @property
+    
+    @property   
     def num_of_servers(self) -> int:
         return len(self.servers)
 

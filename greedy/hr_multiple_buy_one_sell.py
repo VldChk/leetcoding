@@ -1,4 +1,30 @@
 #!/bin/python3
+"""
+HackerRank - Stock Maximize (Medium)
+https://www.hackerrank.com/challenges/stockmax/problem
+
+You know in advance the share price of a stock for the next n days.
+Each day you can either buy exactly one share, sell any number of
+shares you already own, or do nothing. Return the maximum profit you
+can obtain with an optimal trading strategy.
+
+The function signature is `stockmax(prices)` returning the total max
+profit as an integer.
+
+Sample cases:
+  prices = [5, 3, 2]    -> 0    (monotonically decreasing, never trade)
+  prices = [1, 2, 100]  -> 197  (buy day 1 @ 1, buy day 2 @ 2, sell both day 3 @ 100)
+  prices = [1, 3, 1, 2] -> 3    (buy 1 sell 3, buy 1 sell 2)
+
+Solution idea:
+  Identify the "useful peaks" — every strict local maximum that is
+  greater than every peak to its right (the running suprema from the
+  right). Walk left to right keeping a stack of peaks ordered by
+  decreasing peak height (a peak gets dropped if a taller peak appears
+  later). Then walk again: at each day, sell into the next remaining
+  peak's price (peaks[0]). Padding the price array with leading and
+  trailing zero makes the boundary checks uniform.
+"""
 
 import os
 from itertools import islice
@@ -30,6 +56,15 @@ def stockmax(prices: list[int]) -> int:
             revenue += (max(peaks[0][1]-el, 0))
     return revenue
         
+
+if __name__ == '__main__':
+    # Local tests against the HackerRank Sample Input cases. These run
+    # before the file-based harness below so they always complete even
+    # if in.txt/out.txt aren't where the harness expects them.
+    assert stockmax([5, 3, 2]) == 0
+    assert stockmax([1, 2, 100]) == 197
+    assert stockmax([1, 3, 1, 2]) == 3
+    print("hr_multiple_buy_one_sell.py: all tests passed")
 
 if __name__ == '__main__':
     fptr = open('out.txt', 'w')

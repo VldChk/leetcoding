@@ -1,3 +1,24 @@
+"""
+LeetCode 170 - Two Sum III - Data structure design (Easy, Premium)
+https://leetcode.com/problems/two-sum-iii-data-structure-design/
+
+Design a data structure that accepts a stream of integers and checks
+if it has a pair of integers that sum up to a particular value.
+
+Implement the TwoSum class:
+  - TwoSum()             Initializes the TwoSum object.
+  - void add(int number) Adds number to the data structure.
+  - boolean find(value)  Returns true if there exists any pair of
+                         numbers whose sum is equal to value, false
+                         otherwise.
+
+Solution idea:
+  Keep numbers in a sorted list (`bisect.insort_left` on `add`). On
+  `find`, run two pointers from both ends — classic two-sum-on-sorted.
+  O(log n) on add (insort moves elements but the search is log n) and
+  O(n) on find. A different trade-off than the dict-based variant
+  (O(1) add, O(n) find both); LC accepts either.
+"""
 import bisect
 
 
@@ -37,3 +58,15 @@ class TwoSum(object):
 # obj = TwoSum()
 # obj.add(number)
 # param_2 = obj.find(value)
+
+
+if __name__ == "__main__":
+    # LeetCode example 1
+    ts = TwoSum()
+    ts.add(1)
+    ts.add(3)
+    ts.add(5)
+    assert ts.find(4) is True       # 1 + 3 = 4
+    assert ts.find(7) is False      # no pair sums to 7
+
+    print("two_sum_ds.py: all tests passed")

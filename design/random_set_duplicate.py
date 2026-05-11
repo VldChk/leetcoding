@@ -1,3 +1,28 @@
+"""
+LeetCode 381 - Insert Delete GetRandom O(1) - Duplicates allowed (Hard)
+https://leetcode.com/problems/insert-delete-getrandom-o1-duplicates-allowed/
+
+Like LC 380, but the multiset variant: duplicates are permitted, and
+getRandom must return each element with probability proportional to its
+frequency in the collection.
+
+Implement the RandomizedCollection class:
+  - bool insert(int val)  inserts an item; returns True iff this was the
+                          first time val was inserted.
+  - bool remove(int val)  removes one occurrence of val; returns True
+                          iff val was present.
+  - int getRandom()       returns a random element with probability
+                          proportional to its current count.
+
+Solution idea:
+  Same backing list + tombstone scheme as LC 380, but the dict stores
+  a list of indices per value (one per occurrence). insert appends and
+  pushes the new index. remove tombstones the slot at the head index
+  for that value and pops it from the list; if no occurrences remain,
+  the dict entry is deleted. getRandom rolls a uniform index in the
+  active range and re-rolls past tombstones — the probability is
+  proportional to count because each occurrence has its own list slot.
+"""
 import random
 
 class RandomizedCollection:
@@ -45,3 +70,17 @@ class RandomizedCollection:
 # param_1 = obj.insert(val)
 # param_2 = obj.remove(val)
 # param_3 = obj.getRandom()
+
+
+if __name__ == "__main__":
+    # LeetCode example 1
+    random.seed(0)
+    rc = RandomizedCollection()
+    assert rc.insert(1) is True       # 1 not yet present
+    assert rc.insert(1) is False      # 1 already present (now twice)
+    assert rc.insert(2) is True       # 2 not yet present
+    assert rc.getRandom() in {1, 2}   # 1 with p=2/3, 2 with p=1/3
+    assert rc.remove(1) is True       # one copy of 1 removed
+    assert rc.getRandom() in {1, 2}   # 1 and 2 each with p=1/2
+
+    print("random_set_duplicate.py: all tests passed")

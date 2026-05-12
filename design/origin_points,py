@@ -1,0 +1,72 @@
+from __future__ import annotations
+from collections.abc import Sequence
+from dataclasses import dataclass
+import math
+
+
+@dataclass(frozen=True)
+class Point:
+    x: int
+    y: int
+    color: str # we assume that we do not know the unique list of colors we can face
+
+    def distance(self, other: Point) -> int:
+        if self == other:
+            return 0
+        return (self.x - other.x)**2 + (self.y-other.y)**2
+        
+    def is_same_color(self, other: Point) -> bool:
+        return self.color == other.color
+        
+    def __repr__(self) -> str:
+        return ''.join([str(self.x), str(self.y), self.color])
+        
+
+def solve(points: Sequence[Sequence[int | str]]) -> tuple[int, str]:
+    # Here I assume that we receive a list alike [3,5, 'red'] where first 2 numbers are x,y.
+    # I also assume that normalisation of color is beyond the scope
+
+    m_dist: dict[Point, dict[Point, int]] = {}
+    c_points: list[Point] = []
+    colors_set: set[str] = set()
+
+    # converting into dataclass for simplicity of all next operations
+    for p in points:
+        x, y, color = p
+        if not isinstance(x, int) or not isinstance(y, int) or not isinstance(color, str):
+            raise TypeError("Each point must be [x: int, y: int, color: str]")
+        point = Point(x, y, color)
+        colors_set.add(color)
+        m_dist[point] = {}
+        c_points.append(point)
+
+    for outer_point in c_points:
+        for inner_point in c_points:
+            m_dist[outer_point][inner_point] = outer_point.distance(inner_point)
+
+    best_result = 0
+    best_point = None
+
+    for point in c_points:
+        colors: dict[str, list[int | float]] = {color: [math.inf] for color in colors_set}
+        for candidate, dist in m_dist[point].items():
+            if point == candidate:
+                continue
+            bucket = colors[candidate.color]
+            if point.is_same_color(candidate):
+                bucket.append(dist)
+                bucket.sort()
+                del bucket[1:]
+            else:
+                bucket.append(dist)
+                bucket.sort()
+                del bucket[2:]
+
+        # once we build two closest neighbours of each color we can select.
+        max_allowed_distance = min(v[-1] for v in colors.values())
+        number_of_points = sum(1 for v in colors.values() if v[0] < max_allowed_distance)
+        if number_of_points > best_result or best_point is None:
+            best_result = number_of_points
+            best_point = point
+
+    return (best_result, f"{best_point}")

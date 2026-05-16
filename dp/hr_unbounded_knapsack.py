@@ -24,11 +24,7 @@ Solution idea:
   -> return k immediately (saves a full pass).
 """
 
-import math
 import os
-import random
-import re
-import sys
 
 #
 # Complete the 'unboundedKnapsack' function below.
@@ -39,7 +35,7 @@ import sys
 #  2. INTEGER_ARRAY arr
 #
 
-def unboundedKnapsack(k, arr):
+def unboundedKnapsack(k: int, arr: list[int]) -> int:
     if len(arr) == 0 or k < min(arr):
         return 0
     if k in arr:
@@ -81,7 +77,7 @@ if __name__ == '__main__':
 
         arr = list(map(int, input().rstrip().split()))
 
-        result = unboundedKnapsack(k, arr)
+        result: int = unboundedKnapsack(k, arr)
 
         fptr.write(str(result) + '\n')
 

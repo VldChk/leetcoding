@@ -27,15 +27,15 @@ class CircuitBreaker(ABC):
 
 class CircuitBreakerBoolean(CircuitBreaker):
 	def __init__(self, timeout_in_secs: int, limit: Limit):
-		assert (limit is Limit), "value must be Limit class"
+		assert isinstance(limit, Limit), "value must be Limit class"
 		self.__timeout = timeout_in_secs
 		self.failed_attempts = []
 		self.__limit = limit
 		self.state = CircuitBreakerState.CLOSED # all reqs are passed by defaul unless specified otherwise
 		self.__flipper = True
 		self.__lock = Lock()
-		self.__run_clean_log = Thread(target=clean_log, daemon=True)
-		self.__run_set_state = Thread(target=set_state, daemon=True)
+		self.__run_clean_log = Thread(target=self.clean_log, daemon=True)
+		self.__run_set_state = Thread(target=self.set_state, daemon=True)
 		self.__run_clean_log.start()
 		self.__run_set_state.start()
 		

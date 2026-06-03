@@ -116,3 +116,6 @@ dmypy.json
 *.md
 .vscode
 .misc
+
+custom/
+.pyre/

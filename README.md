@@ -48,27 +48,28 @@ practice files; see `CLAUDE.md` and `plan.md` for that.
 
 | Topic            | Easy | Medium | Hard | Total |
 |------------------|-----:|-------:|-----:|------:|
-| arrays           |    3 |     17 |    0 |    20 |
+| arrays           |    4 |     19 |    1 |    24 |
 | backtrace        |    0 |      1 |    0 |     1 |
+| bst              |    0 |      1 |    0 |     1 |
 | c++              |    2 |      1 |    0 |     3 |
 | codeforces       |    — |      — |    — |     2 |
-| design           |    0 |      8 |    3 |    11 |
+| design           |    0 |     11 |    3 |    14 |
 | dp               |    1 |      7 |    2 |    10 |
 | graphs           |    0 |      1 |    1 |     2 |
 | greedy           |    2 |      6 |    1 |     9 |
 | heaps            |    1 |      1 |    1 |     3 |
 | linked_lists     |    1 |      0 |    0 |     1 |
 | stacks           |    0 |      3 |    1 |     4 |
-| strings          |    5 |     12 |    0 |    17 |
+| strings          |    5 |     15 |    1 |    21 |
 | trees            |    2 |      1 |    0 |     3 |
 | two_pointets     |    5 |     12 |    1 |    18 |
-| **TOTAL**        | **22** | **70** | **10** | **104** |
+| **TOTAL**        | **23** | **79** | **12** | **116** |
 
-- 104 solution files covering 98 distinct problems (5 problems have an
+- 116 solution files covering 110 distinct problems (5 problems have an
   alternate solution under a different name — usually a faster/cleaner
   re-derivation: LC 1, LC 15, LC 146, LC 238, LC 1208; LC 146 has three
   variants — two Python and one C++).
-- 100 LeetCode, 2 HackerRank, 2 Codeforces.
+- 112 LeetCode, 2 HackerRank, 2 Codeforces.
 - HackerRank entries are listed as "Medium" for stats purposes
   (HackerRank uses its own tagging; both included here are listed
   Medium on the platform).
@@ -81,6 +82,7 @@ practice files; see `CLAUDE.md` and `plan.md` for that.
 ### Arrays
 
 - LC 33 — [Search in Rotated Sorted Array](https://leetcode.com/problems/search-in-rotated-sorted-array/) (Medium) — `arrays/search_in_rotated_array.py`
+- LC 41 — [First Missing Positive](https://leetcode.com/problems/first-missing-positive/) (Hard) — `arrays/missing_positive_integer.py`
 - LC 59 — [Spiral Matrix II](https://leetcode.com/problems/spiral-matrix-ii/) (Medium) — `arrays/spatial_matrix_2.py`
 - LC 73 — [Set Matrix Zeroes](https://leetcode.com/problems/set-matrix-zeroes/) (Medium) — `arrays/set_matrix_zeroes.py`
 - LC 118 — [Pascal's Triangle](https://leetcode.com/problems/pascals-triangle/) (Easy) — `arrays/pascal_triangle.py`
@@ -90,19 +92,26 @@ practice files; see `CLAUDE.md` and `plan.md` for that.
 - LC 200 — [Number of Islands](https://leetcode.com/problems/number-of-islands/) (Medium) — `arrays/find_islands.py`
 - LC 238 — [Product of Array Except Self](https://leetcode.com/problems/product-of-array-except-self/) (Medium) — `arrays/product_except_self_fast.py`, `arrays/product_except_self_slow.py`
 - LC 287 — [Find the Duplicate Number](https://leetcode.com/problems/find-the-duplicate-number/) (Medium) — `arrays/find_duplicative_number.py`
+- LC 289 — [Game of Life](https://leetcode.com/problems/game-of-life/) (Medium) — `arrays/game_of_life.py`
 - LC 442 — [Find All Duplicates in an Array](https://leetcode.com/problems/find-all-duplicates-in-an-array/) (Medium) — `arrays/find_all_duplicates.py`
 - LC 621 — [Task Scheduler](https://leetcode.com/problems/task-scheduler/) (Medium) — `arrays/task_scheduler.py`
 - LC 875 — [Koko Eating Bananas](https://leetcode.com/problems/koko-eating-bananas/) (Medium) — `arrays/koko_eats_bananas.py`
 - LC 973 — [K Closest Points to Origin](https://leetcode.com/problems/k-closest-points-to-origin/) (Medium) — `arrays/k_closest_origin.py`
 - LC 1357 — [Apply Discount Every n Orders](https://leetcode.com/problems/apply-discount-every-n-orders/) (Medium) — `arrays/apply_discount_n_orders.py`
+- LC 1426 — [Counting Elements](https://leetcode.com/problems/counting-elements/) (Easy, Premium) — `arrays/count_elements.py`
 - LC 1605 — [Find Valid Matrix Given Row and Column Sums](https://leetcode.com/problems/find-valid-matrix-given-row-and-column-sums/) (Medium) — `arrays/reconstruct_matrix.py`
 - LC 2221 — [Find Triangular Sum of an Array](https://leetcode.com/problems/find-triangular-sum-of-an-array/) (Medium) — `arrays/triangular_sum.py`
 - LC 2365 — [Task Scheduler II](https://leetcode.com/problems/task-scheduler-ii/) (Medium) — `arrays/task_scheduler_2.py`
 - LC 2951 — [Find the Peaks](https://leetcode.com/problems/find-the-peaks/) (Easy) — `arrays/find_peaks.py`
+- LC 3496 — [Maximize Score After Pair Deletions](https://leetcode.com/problems/maximize-score-after-pair-deletions/) (Medium) — `arrays/maxing_score_after_deletions.py`
 
 ### Backtracking
 
 - LC 78 — [Subsets](https://leetcode.com/problems/subsets/) (Medium) — `backtrace/subsets.py`
+
+### Binary Search Trees
+
+- LC 98 — [Validate Binary Search Tree](https://leetcode.com/problems/validate-binary-search-tree/) (Medium) — `bst/validate_bst.py`
 
 ### C++
 
@@ -124,7 +133,10 @@ practice files; see `CLAUDE.md` and `plan.md` for that.
 - LC 380 — [Insert Delete GetRandom O(1)](https://leetcode.com/problems/insert-delete-getrandom-o1/) (Medium) — `design/random_set.py`
 - LC 381 — [Insert Delete GetRandom O(1) - Duplicates allowed](https://leetcode.com/problems/insert-delete-getrandom-o1-duplicates-allowed/) (Hard) — `design/random_set_duplicate.py`
 - LC 480 — [Sliding Window Median](https://leetcode.com/problems/sliding-window-median/) (Hard) — `design/sliding_window_median.py`
+- LC 609 — [Find Duplicate File in System](https://leetcode.com/problems/find-duplicate-file-in-system/) (Medium) — `design/find_duplicative_files.py`
 - LC 981 — [Time Based Key-Value Store](https://leetcode.com/problems/time-based-key-value-store/) (Medium) — `design/time_based_kv.py`
+- LC 1236 — [Web Crawler](https://leetcode.com/problems/web-crawler/) (Medium, Premium) — `design/web_crawler.py`
+- LC 1242 — [Web Crawler Multithreaded](https://leetcode.com/problems/web-crawler-multithreaded/) (Medium, Premium) — `design/web_crawler_multithreading.py`
 - LC 1472 — [Design Browser History](https://leetcode.com/problems/design-browser-history/) (Medium) — `design/browser_history.py`
 - LC 2034 — [Stock Price Fluctuation](https://leetcode.com/problems/stock-price-fluctuation/) (Medium) — `design/stock_price.py`
 
@@ -181,10 +193,13 @@ practice files; see `CLAUDE.md` and `plan.md` for that.
 - LC 17 — [Letter Combinations of a Phone Number](https://leetcode.com/problems/letter-combinations-of-a-phone-number/) (Medium) — `strings/letter_combinatorics_phn.py`
 - LC 43 — [Multiply Strings](https://leetcode.com/problems/multiply-strings/) (Medium) — `strings/multiply_string.py`
 - LC 49 — [Group Anagrams](https://leetcode.com/problems/group-anagrams/) (Medium) — `strings/group_anagrams.py`
+- LC 68 — [Text Justification](https://leetcode.com/problems/text-justification/) (Hard) — `strings/text_justification.py`
+- LC 271 — [Encode and Decode Strings](https://leetcode.com/problems/encode-and-decode-strings/) (Medium, Premium) — `strings/encode_decode.py`
 - LC 394 — [Decode String](https://leetcode.com/problems/decode-string/) (Medium) — `strings/decode_strings.py`
 - LC 415 — [Add Strings](https://leetcode.com/problems/add-strings/) (Easy) — `strings/add_strings.py`
 - LC 443 — [String Compression](https://leetcode.com/problems/string-compression/) (Medium) — `strings/compress_string.py`
 - LC 541 — [Reverse String II](https://leetcode.com/problems/reverse-string-ii/) (Easy) — `strings/reverse_string_k.py`
+- LC 567 — [Permutation in String](https://leetcode.com/problems/permutation-in-string/) (Medium) — `strings/permutations_in_strings.py`
 - LC 648 — [Replace Words](https://leetcode.com/problems/replace-words/) (Medium) — `strings/replace_word.py`
 - LC 929 — [Unique Email Addresses](https://leetcode.com/problems/unique-email-addresses/) (Easy) — `strings/unique_strings.py`
 - LC 1078 — [Occurrences After Bigram](https://leetcode.com/problems/occurrences-after-bigram/) (Easy) — `strings/after_bigram.py`
@@ -193,6 +208,7 @@ practice files; see `CLAUDE.md` and `plan.md` for that.
 - LC 2288 — [Apply Discount to Prices](https://leetcode.com/problems/apply-discount-to-prices/) (Medium) — `strings/apply_discount.py`
 - LC 2390 — [Removing Stars From a String](https://leetcode.com/problems/removing-stars-from-a-string/) (Medium) — `strings/replace_stars.py`
 - LC 3167 — [Better Compression of String](https://leetcode.com/problems/better-compression-of-string/) (Medium) — `strings/better_compression.py`
+- LC 3751 — [Total Waviness of Numbers in Range I](https://leetcode.com/problems/total-waviness-of-numbers-in-range-i/) (Medium) — `strings/total_waviness_in_range_1.py`
 
 ### Trees
 

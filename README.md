@@ -48,28 +48,29 @@ practice files; see `CLAUDE.md` and `plan.md` for that.
 
 | Topic            | Easy | Medium | Hard | Total |
 |------------------|-----:|-------:|-----:|------:|
-| arrays           |    4 |     19 |    1 |    24 |
+| arrays           |    5 |     20 |    1 |    26 |
 | backtrace        |    0 |      1 |    0 |     1 |
 | bst              |    0 |      1 |    0 |     1 |
 | c++              |    2 |      1 |    0 |     3 |
-| codeforces       |    — |      — |    — |     2 |
-| design           |    0 |     11 |    3 |    14 |
+| codeforces       |    — |      — |    — |     9 |
+| design           |    0 |     12 |    3 |    15 |
 | dp               |    1 |      7 |    2 |    10 |
 | graphs           |    0 |      1 |    1 |     2 |
 | greedy           |    2 |      6 |    1 |     9 |
 | heaps            |    1 |      1 |    1 |     3 |
 | linked_lists     |    1 |      0 |    0 |     1 |
+| math             |    1 |      0 |    0 |     1 |
 | stacks           |    0 |      3 |    1 |     4 |
 | strings          |    5 |     15 |    1 |    21 |
 | trees            |    2 |      1 |    0 |     3 |
 | two_pointets     |    5 |     12 |    1 |    18 |
-| **TOTAL**        | **23** | **79** | **12** | **116** |
+| **TOTAL**        | **25** | **81** | **12** | **127** |
 
-- 116 solution files covering 110 distinct problems (5 problems have an
+- 127 solution files covering 120 distinct problems (6 problems have an
   alternate solution under a different name — usually a faster/cleaner
-  re-derivation: LC 1, LC 15, LC 146, LC 238, LC 1208; LC 146 has three
-  variants — two Python and one C++).
-- 112 LeetCode, 2 HackerRank, 2 Codeforces.
+  re-derivation: LC 1, LC 15, LC 146, LC 238, LC 1208, CF 2233B; LC 146
+  has three variants — two Python and one C++).
+- 116 LeetCode, 2 HackerRank, 9 Codeforces.
 - HackerRank entries are listed as "Medium" for stats purposes
   (HackerRank uses its own tagging; both included here are listed
   Medium on the platform).
@@ -93,8 +94,10 @@ practice files; see `CLAUDE.md` and `plan.md` for that.
 - LC 238 — [Product of Array Except Self](https://leetcode.com/problems/product-of-array-except-self/) (Medium) — `arrays/product_except_self_fast.py`, `arrays/product_except_self_slow.py`
 - LC 287 — [Find the Duplicate Number](https://leetcode.com/problems/find-the-duplicate-number/) (Medium) — `arrays/find_duplicative_number.py`
 - LC 289 — [Game of Life](https://leetcode.com/problems/game-of-life/) (Medium) — `arrays/game_of_life.py`
+- LC 356 — [Line Reflection](https://leetcode.com/problems/line-reflection/) (Medium, Premium) — `arrays/line_reflection.py`
 - LC 442 — [Find All Duplicates in an Array](https://leetcode.com/problems/find-all-duplicates-in-an-array/) (Medium) — `arrays/find_all_duplicates.py`
 - LC 621 — [Task Scheduler](https://leetcode.com/problems/task-scheduler/) (Medium) — `arrays/task_scheduler.py`
+- LC 760 — [Find Anagram Mappings](https://leetcode.com/problems/find-anagram-mappings/) (Easy, Premium) — `arrays/anagram_mapping.py`
 - LC 875 — [Koko Eating Bananas](https://leetcode.com/problems/koko-eating-bananas/) (Medium) — `arrays/koko_eats_bananas.py`
 - LC 973 — [K Closest Points to Origin](https://leetcode.com/problems/k-closest-points-to-origin/) (Medium) — `arrays/k_closest_origin.py`
 - LC 1357 — [Apply Discount Every n Orders](https://leetcode.com/problems/apply-discount-every-n-orders/) (Medium) — `arrays/apply_discount_n_orders.py`
@@ -123,6 +126,12 @@ practice files; see `CLAUDE.md` and `plan.md` for that.
 
 - CF 731B — [Coupons and Discounts](https://codeforces.com/problemset/problem/731/B) — `codeforces/731b.py`
 - CF 2143B — [Discounts](https://codeforces.com/problemset/problem/2143/B) — `codeforces/2143b.py`
+- CF 2233A — [AI Project Development](https://codeforces.com/contest/2233/problem/A) (Educational Round 191) — `codeforces/educational_191/2233a.py`
+- CF 2233B — [Different Distances](https://codeforces.com/contest/2233/problem/B) (Educational Round 191) — `codeforces/educational_191/2233b.py`, `codeforces/educational_191/2233b_random.py`
+- CF 2233C — [Cost of a Bracket Sequence](https://codeforces.com/contest/2233/problem/C) (Educational Round 191) — `codeforces/educational_191/2233c.py`
+- CF 2236A — [Games on the Train](https://codeforces.com/contest/2236/problem/A) (Round 1103, Div. 3) — `codeforces/1103_div_3/2236a.py`
+- CF 2236B — [Tatar TV Show](https://codeforces.com/contest/2236/problem/B) (Round 1103, Div. 3) — `codeforces/1103_div_3/2236b.py`
+- CF 2236C — [Omsk Programmers](https://codeforces.com/contest/2236/problem/C) (Round 1103, Div. 3) — `codeforces/1103_div_3/2236c.py`
 
 ### Design
 
@@ -138,6 +147,7 @@ practice files; see `CLAUDE.md` and `plan.md` for that.
 - LC 1236 — [Web Crawler](https://leetcode.com/problems/web-crawler/) (Medium, Premium) — `design/web_crawler.py`
 - LC 1242 — [Web Crawler Multithreaded](https://leetcode.com/problems/web-crawler-multithreaded/) (Medium, Premium) — `design/web_crawler_multithreading.py`
 - LC 1472 — [Design Browser History](https://leetcode.com/problems/design-browser-history/) (Medium) — `design/browser_history.py`
+- LC 1756 — [Design Most Recently Used Queue](https://leetcode.com/problems/design-most-recently-used-queue/) (Medium, Premium) — `design/most_recent_queue.py`
 - LC 2034 — [Stock Price Fluctuation](https://leetcode.com/problems/stock-price-fluctuation/) (Medium) — `design/stock_price.py`
 
 ### Dynamic Programming
@@ -179,6 +189,10 @@ practice files; see `CLAUDE.md` and `plan.md` for that.
 ### Linked Lists
 
 - LC 83 — [Remove Duplicates from Sorted List](https://leetcode.com/problems/remove-duplicates-from-sorted-list/) (Easy) — `linked_lists/remove_duplicates_sorted.py`
+
+### Math
+
+- LC 258 — [Add Digits](https://leetcode.com/problems/add-digits/) (Easy) — `math/add_digits.py`
 
 ### Stacks
 

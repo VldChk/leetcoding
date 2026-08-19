@@ -21,8 +21,20 @@ Each task lives in its own self-contained file under a topic directory
    can run a single file and immediately see "all tests passed".
 
 HackerRank files (`hr_*.py`) and Codeforces files (`codeforces/*.py`)
-keep the platform-specific I/O harness (stdin/`OUTPUT_PATH`) intact and
-add the local-test block *before* it.
+keep the platform-specific I/O harness (stdin/`OUTPUT_PATH`) intact. The
+newer Codeforces files read stdin once and branch on it, so running the
+file bare executes the asserts and exits 0, while piping the judge input
+in runs `main()` with clean stdout:
+
+```python
+if __name__ == '__main__':
+    _data = '' if sys.stdin.isatty() else sys.stdin.read()
+    if _data.strip():
+        main(_data)
+    else:
+        ...asserts...
+        print("2250a.py: all tests passed")
+```
 
 ## Toolchain
 
@@ -42,7 +54,7 @@ python3.14 arrays/koko_eats_bananas.py
 ```
 
 The package under `src/pandas_dataset_generator/` is unrelated to the
-practice files; see `CLAUDE.md` and `plan.md` for that.
+practice files; see `CLAUDE.md` for that.
 
 ## Stats
 
@@ -52,7 +64,7 @@ practice files; see `CLAUDE.md` and `plan.md` for that.
 | backtrace        |    0 |      1 |    0 |     1 |
 | bst              |    0 |      1 |    0 |     1 |
 | c++              |    2 |      1 |    0 |     3 |
-| codeforces       |    — |      — |    — |     9 |
+| codeforces       |    — |      — |    — |    19 |
 | design           |    0 |     12 |    3 |    15 |
 | dp               |    1 |      7 |    2 |    10 |
 | graphs           |    0 |      1 |    1 |     2 |
@@ -64,13 +76,13 @@ practice files; see `CLAUDE.md` and `plan.md` for that.
 | strings          |    5 |     15 |    1 |    21 |
 | trees            |    2 |      1 |    0 |     3 |
 | two_pointets     |    5 |     12 |    1 |    18 |
-| **TOTAL**        | **25** | **81** | **12** | **127** |
+| **TOTAL**        | **25** | **81** | **12** | **137** |
 
-- 127 solution files covering 120 distinct problems (6 problems have an
+- 137 solution files covering 130 distinct problems (6 problems have an
   alternate solution under a different name — usually a faster/cleaner
   re-derivation: LC 1, LC 15, LC 146, LC 238, LC 1208, CF 2233B; LC 146
   has three variants — two Python and one C++).
-- 116 LeetCode, 2 HackerRank, 9 Codeforces.
+- 116 LeetCode, 2 HackerRank, 19 Codeforces.
 - HackerRank entries are listed as "Medium" for stats purposes
   (HackerRank uses its own tagging; both included here are listed
   Medium on the platform).
@@ -132,6 +144,16 @@ practice files; see `CLAUDE.md` and `plan.md` for that.
 - CF 2236A — [Games on the Train](https://codeforces.com/contest/2236/problem/A) (Round 1103, Div. 3) — `codeforces/1103_div_3/2236a.py`
 - CF 2236B — [Tatar TV Show](https://codeforces.com/contest/2236/problem/B) (Round 1103, Div. 3) — `codeforces/1103_div_3/2236b.py`
 - CF 2236C — [Omsk Programmers](https://codeforces.com/contest/2236/problem/C) (Round 1103, Div. 3) — `codeforces/1103_div_3/2236c.py`
+- CF 2237A — [Destroying Towers](https://codeforces.com/contest/2237/problem/A) (Order Capital Round 2 / Round 1104, Div. 1 + Div. 2) — `codeforces/orbital_2/a.py`
+- CF 2237B — [Annoying the Ghost](https://codeforces.com/contest/2237/problem/B) (Order Capital Round 2 / Round 1104, Div. 1 + Div. 2) — `codeforces/orbital_2/b.py`
+- CF 2237C — [Duck Surplus](https://codeforces.com/contest/2237/problem/C) (Order Capital Round 2 / Round 1104, Div. 1 + Div. 2) — `codeforces/orbital_2/c.py`
+- CF 2237D — [Fullmetal Bitchemist](https://codeforces.com/contest/2237/problem/D) (Order Capital Round 2 / Round 1104, Div. 1 + Div. 2) — `codeforces/orbital_2/d.py` *(brute force — passes the samples, too slow for the real limit)*
+- CF 2237E — [Permutation Commutation](https://codeforces.com/contest/2237/problem/E) (Order Capital Round 2 / Round 1104, Div. 1 + Div. 2) — `codeforces/orbital_2/e.py`
+- CF 2250A — [Threshold Movement](https://codeforces.com/contest/2250/problem/A) (Round 1112, Div. 2) — `codeforces/1112_div2/2250a.py`
+- CF 2250B — [String Construction](https://codeforces.com/contest/2250/problem/B) (Round 1112, Div. 2) — `codeforces/1112_div2/2250b.py`
+- CF 2257A — [Creating Abbreviations](https://codeforces.com/contest/2257/problem/A) (Round 1117, Div. 2) — `codeforces/1117_div2/2257A.py`
+- CF 2257B — [Gigantomachy](https://codeforces.com/contest/2257/problem/B) (Round 1117, Div. 2) — `codeforces/1117_div2/2257B.py`
+- CF 2257D — [Bermuda Rectangle](https://codeforces.com/contest/2257/problem/D) (Round 1117, Div. 2) — `codeforces/1117_div2/2257D.py`
 
 ### Design
 

@@ -64,25 +64,25 @@ practice files; see `CLAUDE.md` for that.
 | backtrace        |    0 |      1 |    0 |     1 |
 | bst              |    0 |      1 |    0 |     1 |
 | c++              |    2 |      1 |    0 |     3 |
-| codeforces       |    — |      — |    — |    19 |
+| codeforces       |    — |      — |    — |    24 |
 | design           |    0 |     12 |    3 |    15 |
-| dp               |    1 |      7 |    2 |    10 |
+| dp               |    1 |      8 |    2 |    11 |
 | graphs           |    0 |      1 |    1 |     2 |
 | greedy           |    2 |      6 |    1 |     9 |
 | heaps            |    1 |      1 |    1 |     3 |
-| linked_lists     |    1 |      0 |    0 |     1 |
+| linked_lists     |    1 |      1 |    0 |     2 |
 | math             |    1 |      0 |    0 |     1 |
 | stacks           |    0 |      3 |    1 |     4 |
 | strings          |    5 |     15 |    1 |    21 |
 | trees            |    2 |      1 |    0 |     3 |
 | two_pointets     |    5 |     12 |    1 |    18 |
-| **TOTAL**        | **25** | **81** | **12** | **137** |
+| **TOTAL**        | **25** | **83** | **12** | **144** |
 
-- 137 solution files covering 130 distinct problems (6 problems have an
+- 144 solution files covering 137 distinct problems (6 problems have an
   alternate solution under a different name — usually a faster/cleaner
   re-derivation: LC 1, LC 15, LC 146, LC 238, LC 1208, CF 2233B; LC 146
   has three variants — two Python and one C++).
-- 116 LeetCode, 2 HackerRank, 19 Codeforces.
+- 118 LeetCode, 2 HackerRank, 24 Codeforces.
 - HackerRank entries are listed as "Medium" for stats purposes
   (HackerRank uses its own tagging; both included here are listed
   Medium on the platform).
@@ -137,6 +137,8 @@ practice files; see `CLAUDE.md` for that.
 ### Codeforces
 
 - CF 731B — [Coupons and Discounts](https://codeforces.com/problemset/problem/731/B) — `codeforces/731b.py`
+- CF 1352B — [Same Parity Summands](https://codeforces.com/problemset/problem/1352/B) — `codeforces/1352B.py`
+- CF 1512C — [A-B Palindrome](https://codeforces.com/problemset/problem/1512/C) — `codeforces/1512C.py`
 - CF 2143B — [Discounts](https://codeforces.com/problemset/problem/2143/B) — `codeforces/2143b.py`
 - CF 2233A — [AI Project Development](https://codeforces.com/contest/2233/problem/A) (Educational Round 191) — `codeforces/educational_191/2233a.py`
 - CF 2233B — [Different Distances](https://codeforces.com/contest/2233/problem/B) (Educational Round 191) — `codeforces/educational_191/2233b.py`, `codeforces/educational_191/2233b_random.py`
@@ -144,16 +146,19 @@ practice files; see `CLAUDE.md` for that.
 - CF 2236A — [Games on the Train](https://codeforces.com/contest/2236/problem/A) (Round 1103, Div. 3) — `codeforces/1103_div_3/2236a.py`
 - CF 2236B — [Tatar TV Show](https://codeforces.com/contest/2236/problem/B) (Round 1103, Div. 3) — `codeforces/1103_div_3/2236b.py`
 - CF 2236C — [Omsk Programmers](https://codeforces.com/contest/2236/problem/C) (Round 1103, Div. 3) — `codeforces/1103_div_3/2236c.py`
-- CF 2237A — [Destroying Towers](https://codeforces.com/contest/2237/problem/A) (Order Capital Round 2 / Round 1104, Div. 1 + Div. 2) — `codeforces/orbital_2/a.py`
-- CF 2237B — [Annoying the Ghost](https://codeforces.com/contest/2237/problem/B) (Order Capital Round 2 / Round 1104, Div. 1 + Div. 2) — `codeforces/orbital_2/b.py`
-- CF 2237C — [Duck Surplus](https://codeforces.com/contest/2237/problem/C) (Order Capital Round 2 / Round 1104, Div. 1 + Div. 2) — `codeforces/orbital_2/c.py`
-- CF 2237D — [Fullmetal Bitchemist](https://codeforces.com/contest/2237/problem/D) (Order Capital Round 2 / Round 1104, Div. 1 + Div. 2) — `codeforces/orbital_2/d.py` *(brute force — passes the samples, too slow for the real limit)*
-- CF 2237E — [Permutation Commutation](https://codeforces.com/contest/2237/problem/E) (Order Capital Round 2 / Round 1104, Div. 1 + Div. 2) — `codeforces/orbital_2/e.py`
+- CF 2237A — [Destroying Towers](https://codeforces.com/contest/2237/problem/A) (Order Capital Round 2 / Round 1104, Div. 1 + Div. 2) — `codeforces/orbital_2/2237a.py`
+- CF 2237B — [Annoying the Ghost](https://codeforces.com/contest/2237/problem/B) (Order Capital Round 2 / Round 1104, Div. 1 + Div. 2) — `codeforces/orbital_2/2237b.py`
+- CF 2237C — [Duck Surplus](https://codeforces.com/contest/2237/problem/C) (Order Capital Round 2 / Round 1104, Div. 1 + Div. 2) — `codeforces/orbital_2/2237c.py`
+- CF 2237D — [Fullmetal Bitchemist](https://codeforces.com/contest/2237/problem/D) (Order Capital Round 2 / Round 1104, Div. 1 + Div. 2) — `codeforces/orbital_2/2237d.py` *(brute force — passes the samples, too slow for the real limit)*
+- CF 2237E — [Permutation Commutation](https://codeforces.com/contest/2237/problem/E) (Order Capital Round 2 / Round 1104, Div. 1 + Div. 2) — `codeforces/orbital_2/2237e.py`
 - CF 2250A — [Threshold Movement](https://codeforces.com/contest/2250/problem/A) (Round 1112, Div. 2) — `codeforces/1112_div2/2250a.py`
 - CF 2250B — [String Construction](https://codeforces.com/contest/2250/problem/B) (Round 1112, Div. 2) — `codeforces/1112_div2/2250b.py`
 - CF 2257A — [Creating Abbreviations](https://codeforces.com/contest/2257/problem/A) (Round 1117, Div. 2) — `codeforces/1117_div2/2257A.py`
 - CF 2257B — [Gigantomachy](https://codeforces.com/contest/2257/problem/B) (Round 1117, Div. 2) — `codeforces/1117_div2/2257B.py`
 - CF 2257D — [Bermuda Rectangle](https://codeforces.com/contest/2257/problem/D) (Round 1117, Div. 2) — `codeforces/1117_div2/2257D.py`
+- CF 2260A — [Monocarp's Contest](https://codeforces.com/contest/2260/problem/A) (Educational Round 194) — `codeforces/educative_194/2260a.py`
+- CF 2260B — [Monocarp and Projects](https://codeforces.com/contest/2260/problem/B) (Educational Round 194) — `codeforces/educative_194/2260b.py`
+- CF 2260C — [Maximize XOR, Minimize Operations](https://codeforces.com/contest/2260/problem/C) (Educational Round 194) — `codeforces/educative_194/2260c.py`
 
 ### Design
 
@@ -175,6 +180,7 @@ practice files; see `CLAUDE.md` for that.
 ### Dynamic Programming
 
 - LC 62 — [Unique Paths](https://leetcode.com/problems/unique-paths/) (Medium) — `dp/unique_paths_1.py`
+- LC 64 — [Minimum Path Sum](https://leetcode.com/problems/minimum-path-sum/) (Medium) — `dp/minimal_path_sum.py`
 - LC 70 — [Climbing Stairs](https://leetcode.com/problems/climbing-stairs/) (Easy) — `dp/climb_stairs.py`
 - LC 123 — [Best Time to Buy and Sell Stock III](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/) (Hard) — `dp/best_buy_and_sell_stocks_3.py`
 - LC 188 — [Best Time to Buy and Sell Stock IV](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iv/) (Hard) — `dp/best_buy_and_sell_stocks_4.py`
@@ -211,6 +217,7 @@ practice files; see `CLAUDE.md` for that.
 ### Linked Lists
 
 - LC 83 — [Remove Duplicates from Sorted List](https://leetcode.com/problems/remove-duplicates-from-sorted-list/) (Easy) — `linked_lists/remove_duplicates_sorted.py`
+- LC 138 — [Copy List with Random Pointer](https://leetcode.com/problems/copy-list-with-random-pointer/) (Medium) — `linked_lists/copy_list_with_random_pointer.py`
 
 ### Math
 

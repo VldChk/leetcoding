@@ -3,6 +3,24 @@
 A personal grind log of competitive-programming and interview-prep solutions
 — mostly LeetCode, plus a sprinkling of HackerRank and Codeforces.
 
+## Ground rules
+
+1. **Every solution in this repo is mine, and every solution was written by
+   a human.** The algorithm, the data structures and the control flow in
+   each file are my own work, typed during a contest or a practice session.
+2. **AI is used only as a documentation and testing pass.** Once a solution
+   already works, an assistant adds the top-of-file docstring (restated
+   problem, official samples, the "Solution idea" paragraph) and the
+   `__main__` block of asserts, so the file still makes sense to me months
+   later and can be re-run on its own. It also strips leftover debug prints
+   and dead code, and checks the solution against the judge's own samples.
+3. **The solving logic is never rewritten by AI.** If verification turns up
+   a bug, it gets reported to me and I fix it myself. An unsolved problem
+   stays out of the repo rather than being quietly repaired.
+4. **Git history keeps the two apart.** Raw contest code lands in its own
+   commit first and the documentation pass lands in the next one, so the
+   diff between those two commits is exactly what the machine contributed.
+
 ## File layout convention
 
 Each task lives in its own self-contained file under a topic directory
@@ -64,9 +82,9 @@ practice files; see `CLAUDE.md` for that.
 | backtrace        |    0 |      1 |    0 |     1 |
 | bst              |    0 |      1 |    0 |     1 |
 | c++              |    2 |      1 |    0 |     3 |
-| codeforces       |    — |      — |    — |    24 |
+| codeforces       |    — |      — |    — |    38 |
 | design           |    0 |     12 |    3 |    15 |
-| dp               |    1 |      8 |    2 |    11 |
+| dp               |    1 |      9 |    2 |    12 |
 | graphs           |    0 |      1 |    1 |     2 |
 | greedy           |    2 |      6 |    1 |     9 |
 | heaps            |    1 |      1 |    1 |     3 |
@@ -75,20 +93,40 @@ practice files; see `CLAUDE.md` for that.
 | stacks           |    0 |      3 |    1 |     4 |
 | strings          |    5 |     15 |    1 |    21 |
 | trees            |    2 |      1 |    0 |     3 |
-| two_pointets     |    5 |     12 |    1 |    18 |
-| **TOTAL**        | **25** | **83** | **12** | **144** |
+| two_pointets     |    5 |     13 |    1 |    19 |
+| **TOTAL**        | **25** | **85** | **12** | **160** |
 
-- 144 solution files covering 137 distinct problems (6 problems have an
+- 160 solution files covering 153 distinct problems (6 problems have an
   alternate solution under a different name — usually a faster/cleaner
   re-derivation: LC 1, LC 15, LC 146, LC 238, LC 1208, CF 2233B; LC 146
   has three variants — two Python and one C++).
-- 118 LeetCode, 2 HackerRank, 24 Codeforces.
+- 120 LeetCode, 2 HackerRank, 38 Codeforces.
 - HackerRank entries are listed as "Medium" for stats purposes
   (HackerRank uses its own tagging; both included here are listed
   Medium on the platform).
 - Codeforces problems do not have a fixed difficulty label, only a
   per-round letter, so they are excluded from the difficulty
   distribution.
+
+## Codeforces contest record
+
+Rated rounds entered so far, newest first (handle `vldchk`). "Solved" counts
+only what was accepted inside the contest window — a few files here are
+upsolves finished after the clock ran out, and those say so in their own
+docstring.
+
+| #  | Round                                               | Date       | Rank  | Solved | Δ rating | Rating after |
+|---:|-----------------------------------------------------|------------|------:|-------:|---------:|-------------:|
+|  8 | Round 1123 (Div. 2)                                 | 2026-09-25 |  6667 |      3 |      −34 |         1242 |
+|  7 | Round 1122 (Div. 3)                                 | 2026-09-21 |  4808 |      4 |       −1 |         1276 |
+|  6 | Educational Round 194 (rated Div. 2)                | 2026-09-08 |  5032 |      3 |      +45 |         1277 |
+|  5 | Round 1117 (Div. 2)                                 | 2026-08-17 |  4430 |      3 |     +109 |         1232 |
+|  4 | Round 1112 (Div. 2)                                 | 2026-07-26 |  8728 |      2 |      +57 |         1123 |
+|  3 | Order Capital Round 2 (Round 1104, Div. 1 + Div. 2) | 2026-06-18 |  3218 |      4 |     +305 |         1066 |
+|  2 | Round 1103 (Div. 3)                                 | 2026-06-12 | 10894 |      3 |     +265 |          761 |
+|  1 | Educational Round 191 (rated Div. 2)                | 2026-06-09 |  4484 |      3 |     +496 |          496 |
+
+Reached **Pupil** (1200+) at Round 1117.
 
 ## Problem index
 
@@ -137,8 +175,14 @@ practice files; see `CLAUDE.md` for that.
 ### Codeforces
 
 - CF 731B — [Coupons and Discounts](https://codeforces.com/problemset/problem/731/B) — `codeforces/731b.py`
+- CF 1283C — [Friends and Gifts](https://codeforces.com/problemset/problem/1283/C) — `codeforces/1283c.py`
 - CF 1352B — [Same Parity Summands](https://codeforces.com/problemset/problem/1352/B) — `codeforces/1352B.py`
+- CF 1355B — [Young Explorers](https://codeforces.com/problemset/problem/1355/B) — `codeforces/1355b.py`
+- CF 1374D — [Zero Remainder Array](https://codeforces.com/problemset/problem/1374/D) — `codeforces/1374d.py`
+- CF 1497B — [M-arrays](https://codeforces.com/problemset/problem/1497/B) — `codeforces/1497b.py`
 - CF 1512C — [A-B Palindrome](https://codeforces.com/problemset/problem/1512/C) — `codeforces/1512C.py`
+- CF 1539C — [Stable Groups](https://codeforces.com/problemset/problem/1539/C) — `codeforces/1539c.py`
+- CF 1703E — [Mirror Grid](https://codeforces.com/problemset/problem/1703/E) — `codeforces/1703e.py`
 - CF 2143B — [Discounts](https://codeforces.com/problemset/problem/2143/B) — `codeforces/2143b.py`
 - CF 2233A — [AI Project Development](https://codeforces.com/contest/2233/problem/A) (Educational Round 191) — `codeforces/educational_191/2233a.py`
 - CF 2233B — [Different Distances](https://codeforces.com/contest/2233/problem/B) (Educational Round 191) — `codeforces/educational_191/2233b.py`, `codeforces/educational_191/2233b_random.py`
@@ -159,6 +203,14 @@ practice files; see `CLAUDE.md` for that.
 - CF 2260A — [Monocarp's Contest](https://codeforces.com/contest/2260/problem/A) (Educational Round 194) — `codeforces/educative_194/2260a.py`
 - CF 2260B — [Monocarp and Projects](https://codeforces.com/contest/2260/problem/B) (Educational Round 194) — `codeforces/educative_194/2260b.py`
 - CF 2260C — [Maximize XOR, Minimize Operations](https://codeforces.com/contest/2260/problem/C) (Educational Round 194) — `codeforces/educative_194/2260c.py`
+- CF 2266A — [Good Contest](https://codeforces.com/contest/2266/problem/A) (Round 1122, Div. 3) — `codeforces/1122_div3/2266a.py`
+- CF 2266B — [Three Piles](https://codeforces.com/contest/2266/problem/B) (Round 1122, Div. 3) — `codeforces/1122_div3/2266b.py`
+- CF 2266C — [AND, OR, Sort!](https://codeforces.com/contest/2266/problem/C) (Round 1122, Div. 3) — `codeforces/1122_div3/2266c.py`
+- CF 2266D — [Falling Concrete](https://codeforces.com/contest/2266/problem/D) (Round 1122, Div. 3) — `codeforces/1122_div3/2266d.py`
+- CF 2266E — [Prime Destruction](https://codeforces.com/contest/2266/problem/E) (Round 1122, Div. 3) — `codeforces/1122_div3/2266e.py`
+- CF 2267A — [Turn Into a Palindrome](https://codeforces.com/contest/2267/problem/A) (Round 1123, Div. 2) — `codeforces/1123_div2/2267a.py`
+- CF 2267B — [Fashionable Array](https://codeforces.com/contest/2267/problem/B) (Round 1123, Div. 2) — `codeforces/1123_div2/2267b.py`
+- CF 2267C — [GCD Treasury](https://codeforces.com/contest/2267/problem/C) (Round 1123, Div. 2) — `codeforces/1123_div2/2267c.py`
 
 ### Design
 
@@ -186,6 +238,7 @@ practice files; see `CLAUDE.md` for that.
 - LC 188 — [Best Time to Buy and Sell Stock IV](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iv/) (Hard) — `dp/best_buy_and_sell_stocks_4.py`
 - LC 309 — [Best Time to Buy and Sell Stock with Cooldown](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/) (Medium) — `dp/best_buy_sell_stocks_cooldown.py`
 - LC 322 — [Coin Change](https://leetcode.com/problems/coin-change/) (Medium) — `dp/coin_change.py`
+- LC 494 — [Target Sum](https://leetcode.com/problems/target-sum/) (Medium) — `dp/target_sum.py`
 - LC 518 — [Coin Change II](https://leetcode.com/problems/coin-change-ii/) (Medium) — `dp/coin_change_2.py`
 - LC 714 — [Best Time to Buy and Sell Stock with Transaction Fee](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/) (Medium) — `dp/max_profit_with_transaction_fee.py`
 - LC 2291 — [Maximum Profit From Trading Stocks](https://leetcode.com/problems/maximum-profit-from-trading-stocks/) (Medium, Premium) — `dp/max_profit_trading_stocks.py`
@@ -277,6 +330,7 @@ practice files; see `CLAUDE.md` for that.
 - LC 1679 — [Max Number of K-Sum Pairs](https://leetcode.com/problems/max-number-of-k-sum-pairs/) (Medium) — `two_pointets/k_sum_pairs.py`
 - LC 1711 — [Count Good Meals](https://leetcode.com/problems/count-good-meals/) (Medium) — `two_pointets/good_meal_count.py`
 - LC 2491 — [Divide Players Into Teams of Equal Skill](https://leetcode.com/problems/divide-players-into-teams-of-equal-skill/) (Medium) — `two_pointets/divide_players.py`
+- LC 2958 — [Length of Longest Subarray With at Most K Frequency](https://leetcode.com/problems/length-of-longest-subarray-with-at-most-k-frequency/) (Medium) — `two_pointets/longest_subarray_with_k.py`
 
 ## License
 
